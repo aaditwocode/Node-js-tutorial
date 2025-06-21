@@ -3,7 +3,8 @@ const app = express();
 const db = require('./db');
 const Person = require('./models/person');
 const Menu = require('./models/menu');
-require('dotenv').config();
+require('dotenv').config(); // load .env variables
+const PORT = process.env.PORT || 3000; // fallback for local dev
 
 
 const bodyparser = require('body-parser');
@@ -87,10 +88,6 @@ app.use('/persons' , personRoutes);
 
 const menuRoutes = require('./routes/menuRouter');
 app.use('/menus', menuRoutes);
-
-
-const port = process.env.PORT || 5000 ;
-
 
 app.listen(PORT, () => {
   console.log('This port is about to start');
