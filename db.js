@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 
-const mongo_url = 'mongodb://localhost:27017/hotels';
+
+//const mongo_url = process.env.DB_URL_LOCAL;
+const mongo_url = process.env.DB_URL;
 
 mongoose.connect(mongo_url, {
   useNewUrlParser: true,

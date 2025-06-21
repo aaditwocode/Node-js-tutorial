@@ -3,6 +3,8 @@ const app = express();
 const db = require('./db');
 const Person = require('./models/person');
 const Menu = require('./models/menu');
+require('dotenv').config();
+
 
 const bodyparser = require('body-parser');
 app.use(bodyparser.json()); //req.body saved
@@ -87,6 +89,9 @@ const menuRoutes = require('./routes/menuRouter');
 app.use('/menus', menuRoutes);
 
 
-app.listen(3000, () => {
+const port = process.env.PORT || 5000 ;
+
+
+app.listen(PORT, () => {
   console.log('This port is about to start');
 });
