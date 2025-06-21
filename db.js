@@ -4,10 +4,10 @@ const mongoose = require('mongoose');
 //const mongo_url = process.env.DB_URL_LOCAL;
 const mongo_url = process.env.DB_URL;
 
-mongoose.connect(mongo_url, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+// mongoose.connect(mongo_url, {
+//   useNewUrlParser: true,
+//   useUnifiedTopology: true,
+// });
 
 const db = mongoose.connection;
 
