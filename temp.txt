@@ -1,0 +1,24 @@
+// console.log("go");
+
+// function add(a,b){
+//   return a+b;
+// }
+
+// var add =(a,b) =>{ return a+b;}
+// const ans= add(412,0);
+// console.log(ans);
+
+// var fs=require('fs');
+// var os=require('os');
+
+// var user=os.userInfo();
+// console.log(user.username);
+
+// fs.appendFile('greetings.txt' , 'hi'+user.username ,()=>{console.log('file created')})
+
+// const notes=require('./keynotes');
+
+// console.log(notes.age)
+// console.log(notes.add(34,43));
+
+// var _ = require('lodash');

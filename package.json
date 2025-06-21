@@ -1,0 +1,20 @@
+{
+  "name": "tutorial",
+  "version": "1.0.0",
+  "description": "learning nodejs",
+  "license": "ISC",
+  "author": "Aaditya Pratap Singh",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "serve": "nodemon server.js"
+  },
+  "dependencies": {
+    "body-parser": "^2.2.0",
+    "express": "^5.1.0",
+    "lodash": "^4.17.21",
+    "mongoose": "^8.16.0",
+    "nodemon": "^3.1.10"
+  }
+}
