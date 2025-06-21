@@ -1,26 +1,21 @@
 const mongoose = require('mongoose');
+require('dotenv').config();
 
+// const mongo_url = process.env.DB_URL_LOCAL; // 📝 Local MongoDB URI (optional, for local testing)
+const mongo_url = process.env.DB_URL; // ✅ MongoDB Atlas URI for production
 
-//const mongo_url = process.env.DB_URL_LOCAL;
-const mongo_url = process.env.DB_URL;
+async function connectToDB() {
+  try {
+    await mongoose.connect(mongo_url); // modern default connection (no deprecated options)
+    console.log('✅ Mongoose connected to hotels database');
+  } catch (err) {
+    console.error('❌ Mongoose connection error:', err.message);
+    process.exit(1); // Exit if DB fails to connect
+  }
 
-// mongoose.connect(mongo_url, {
-//   useNewUrlParser: true,
-//   useUnifiedTopology: true,
-// });
+  mongoose.connection.on('disconnected', () => {
+    console.log('Mongoose disconnected');
+  });
+}
 
-const db = mongoose.connection;
-
-db.on('connected', () => {
-  console.log('Mongoose connected to hotels database');
-});
-
-db.on('error', (err) => {
-  console.error('Mongoose connection error:', err);
-});
-
-db.on('disconnected', () => {
-  console.log('Mongoose disconnected');
-});
-
-module.exports = db;
+module.exports = connectToDB;
