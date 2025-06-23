@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 require('dotenv').config();
 
-// const mongo_url = process.env.DB_URL_LOCAL; // 📝 Local MongoDB URI (optional, for local testing)
-const mongo_url = process.env.DB_URL; // ✅ MongoDB Atlas URI for production
+const mongo_url = process.env.DB_URL_LOCAL; // 📝 Local MongoDB URI (optional, for local testing)
+// const mongo_url = process.env.DB_URL; // ✅ MongoDB Atlas URI for production
 
 async function connectToDB() {
   try {
