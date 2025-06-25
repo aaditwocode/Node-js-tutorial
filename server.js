@@ -5,6 +5,7 @@ require('dotenv').config();
 const connectToDB = require('./db');
 const Person = require('./models/person');
 const Menu = require('./models/menu');
+const { generateToken } = require('./jwt'); 
 
 const bodyparser = require('body-parser');
 app.use(bodyparser.json());
@@ -28,17 +29,52 @@ app.get('/', middleauth, (req, res) => {
 });
 
 // ✅ Create new person (unprotected)
-app.post('/persons', async (req, res) => {
+app.post('/persons/signup', async (req, res) => {
     try {
         const newPerson = new Person(req.body);
         const savedPerson = await newPerson.save();
         console.log('Data saved successfully');
-        res.status(200).json(savedPerson);
+
+        const token = generateToken(savedPerson.username); // ✅ Correct usage
+        console.log("Token is: ", token);
+
+        res.status(200).json({ user: savedPerson, token: token }); // ✅ Send one clean response
     } catch (error) {
         console.log('Error saving person:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
 });
+
+app.post('/persons/login', async (req, res) => {
+    try {
+        const { username, password } = req.body;
+
+        // 1. Find user by username
+        const user = await Person.findOne({ username });
+        if (!user) {
+            return res.status(401).json({ error: 'Invalid username or password' });
+        }
+
+        // 2. Compare password using bcrypt
+        const bcrypt = require('bcrypt');
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+            return res.status(401).json({ error: 'Invalid username or password' });
+        }
+
+        // 3. Generate token with payload (username + id)
+        const payload = { username: user.username, id: user._id };
+        const token = generateToken(payload); // ✅ Your jwt.js should accept object payload
+
+        // 4. Send response with token
+        res.json({ token });
+
+    } catch (error) {
+        console.error('Login error:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
 
 // ✅ Get ONLY the authenticated person
 app.get('/persons', middleauth, async (req, res) => {
@@ -65,28 +101,28 @@ app.post('/menu', async (req, res) => {
     }
 });
 
-// ✅ Get persons by work type (protected)
-app.get('/persons/:workType', middleauth, async (req, res) => {
-    const workType = req.params.workType.toLowerCase();
+// // ✅ Get persons by work type (protected)
+// app.get('/persons/:workType', middleauth, async (req, res) => {
+//     const workType = req.params.workType.toLowerCase();
 
-    try {
-        const exists = await Person.exists({ work: workType });
-        if (!exists) {
-            return res.status(400).json({ error: 'Invalid work type' });
-        }
+//     try {
+//         const exists = await Person.exists({ work: workType });
+//         if (!exists) {
+//             return res.status(400).json({ error: 'Invalid work type' });
+//         }
 
-        const persons = await Person.find({ work: workType }).select('-password -username');
-        console.log('Response fetched successfully');
-        res.status(200).json(persons);
-    } catch (error) {
-        console.log('Error fetching persons by workType:', error);
-        res.status(500).json({ error: 'Internal server error' });
-    }
-});
+//         const persons = await Person.find({ work: workType }).select('-password -username');
+//         console.log('Response fetched successfully');
+//         res.status(200).json(persons);
+//     } catch (error) {
+//         console.log('Error fetching persons by workType:', error);
+//         res.status(500).json({ error: 'Internal server error' });
+//     }
+// });
 
 // ✅ External routes with auth
 const personRoutes = require('./routes/personRoutes');
-app.use('/persons', middleauth, personRoutes);
+app.use('/persons', personRoutes);
 
 const menuRoutes = require('./routes/menuRouter');
 app.use('/menus', middleauth, menuRoutes);
